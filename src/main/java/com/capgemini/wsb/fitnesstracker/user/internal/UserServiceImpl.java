@@ -27,6 +27,35 @@ class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User updateUser(User user) {
+        if (user.getId() == null || !userRepository.existsById(user.getId())) {
+            throw new RuntimeException("User not found or ID not provided for update");
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        if (!userRepository.existsById(id)) {
+            log.error("Attempt to delete non-existing user with id: " + id);
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+        log.info("Deleted user with id: " + id);
+    }
+
+    @Override
     public Optional<User> getUser(final Long userId) {
         return userRepository.findById(userId);
     }
