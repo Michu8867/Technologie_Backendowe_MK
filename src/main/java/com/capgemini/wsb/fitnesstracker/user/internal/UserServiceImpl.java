@@ -7,13 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-class UserServiceImpl implements UserService, UserProvider {
+public class UserServiceImpl implements UserService, UserProvider {
 
     private final UserRepository userRepository;
 
@@ -53,6 +54,17 @@ class UserServiceImpl implements UserService, UserProvider {
         }
         userRepository.deleteById(id);
         log.info("Deleted user with id: " + id);
+    }
+
+    @Override
+    public List<User> findUsersByEmailAddress(String emailAddresses) {
+        return userRepository.findUsersByEmailContaining(emailAddresses);
+    }
+
+    @Override
+    public List<User> findUsersOlderThan(int age) {
+        LocalDate cutoffDate = LocalDate.now().minusYears(age);
+        return userRepository.findUsersOlderThan(cutoffDate);
     }
 
     @Override

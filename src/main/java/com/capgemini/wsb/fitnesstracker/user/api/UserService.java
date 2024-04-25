@@ -13,5 +13,7 @@ public interface UserService {
     List<User> getAllUsers();
     User updateUser(User user);
     void deleteUserById(Long id);
+    List<User> findUsersByEmailAddress(String emailAddresses);
+    List<User> findUsersOlderThan(int age);
 
 }
