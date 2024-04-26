@@ -3,6 +3,7 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
+import com.capgemini.wsb.fitnesstracker.user.api.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,11 +40,12 @@ public class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public User updateUser(User user) {
-        if (user.getId() == null || !userRepository.existsById(user.getId())) {
-            throw new RuntimeException("User not found or ID not provided for update");
-        }
-        return userRepository.save(user);
+    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
+        User userToUpdate = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                userToUpdate.setFirstName(userUpdateDto.getFirstName());
+                userToUpdate.setLastName(userUpdateDto.getLastName());
+        return userRepository.save(userToUpdate);
     }
 
     @Override
