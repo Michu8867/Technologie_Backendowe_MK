@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,11 +62,11 @@ public class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findUsersByEmailContaining(emailAddresses);
     }
 
-    @Override
-    public List<User> findUsersOlderThan(int age) {
-        LocalDate cutoffDate = LocalDate.now().minusYears(age);
-        return userRepository.findUsersOlderThan(cutoffDate);
-    }
+//    @Override
+//    public List<User> findUsersOlderThan(int age) {
+//        LocalDate cutoffDate = LocalDate.now().minusYears(age);
+//        return userRepository.findUsersOlderThan(cutoffDate);
+//    }
 
     @Override
     public Optional<User> getUser(final Long userId) {

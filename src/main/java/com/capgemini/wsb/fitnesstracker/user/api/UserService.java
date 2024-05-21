@@ -15,7 +15,7 @@ public interface UserService {
 
     void deleteUserById(Long id);
     List<User> findUsersByEmailAddress(String emailAddresses);
-    List<User> findUsersOlderThan(int age);
+    //List<User> findUsersOlderThan(int age);
 
     List<User> findAllUsers();
 }

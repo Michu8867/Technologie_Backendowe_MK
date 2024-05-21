@@ -2,12 +2,11 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
-import com.capgemini.wsb.fitnesstracker.user.api.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -30,17 +29,21 @@ public class UserController {
                           .collect(toList());
     }
 
-    @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
-        log.info("Adding new user with e-mail: {}", userDto.email());
-        User user = userMapper.toEntity(userDto);
-        User savedUser = userService.createUser(user);
-        return ResponseEntity.ok(userMapper.toDto(savedUser));
+    /* Crud operations */
+    @PostMapping("/{firstName}/{lastName}/{birthdate}/{email}")
+    public void createUserInDatabase(@PathVariable String firstName,
+                                     @PathVariable String lastName,
+                                     @PathVariable LocalDate birthdate,
+                                     @PathVariable String email) {
+        userService.createUser(new User(firstName, lastName, birthdate, email));
     }
 
-   @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto userUpdateDto) {
-        User updatedUser = userService.updateUser(id, userUpdateDto);
-        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+    // get user by id
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable Long id) {
+        return userMapper.toDto(userService.getUserById(id));
     }
+
+
+
 }
