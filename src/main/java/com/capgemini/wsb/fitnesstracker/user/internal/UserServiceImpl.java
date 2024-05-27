@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +44,8 @@ public class UserServiceImpl implements UserService, UserProvider {
     public User updateUser(Long id, UserUpdateDto userUpdateDto) {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-                userToUpdate.setFirstName(userUpdateDto.getFirstName());
-                userToUpdate.setLastName(userUpdateDto.getLastName());
+        userToUpdate.setFirstName(userUpdateDto.getFirstName());
+        userToUpdate.setLastName(userUpdateDto.getLastName());
         return userRepository.save(userToUpdate);
     }
 
@@ -62,11 +64,18 @@ public class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findUsersByEmailContaining(emailAddresses);
     }
 
-//    @Override
-//    public List<User> findUsersOlderThan(int age) {
-//        LocalDate cutoffDate = LocalDate.now().minusYears(age);
-//        return userRepository.findUsersOlderThan(cutoffDate);
-//    }
+    @Override
+    public List<UserEmailDto> findUsersByEmail(String email) {
+        return userRepository.findUsersByEmailContaining(email).stream()
+                .map(user -> new UserEmailDto(user.getId(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findUsersOlderThan(int age) {
+        LocalDate cutoffDate = LocalDate.now().minusYears(age);
+        return userRepository.findUsersOlderThan(cutoffDate);
+    }
 
     @Override
     public Optional<User> getUser(final Long userId) {
@@ -82,5 +91,4 @@ public class UserServiceImpl implements UserService, UserProvider {
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
-
 }
