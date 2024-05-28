@@ -2,17 +2,17 @@ package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
-import com.capgemini.wsb.fitnesstracker.user.api.UserUpdateDto;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserBasicInfoDto;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserDto;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserEmailDto;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
-@Slf4j
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
@@ -21,55 +21,107 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.findAllUsers()
+    // List all users with basic info
+    @GetMapping("/basic-info")
+    public List<UserBasicInfoDto> getAllUsersBasicInfo() {
+        return userService.getAllUsers()
                 .stream()
-                .map(userMapper::toDto)
-                .collect(toList());
+                .map(user -> new UserBasicInfoDto(user.getId(), user.getFirstName(), user.getLastName()))
+                .collect(Collectors.toList());
     }
 
     // Find users by email
     @GetMapping("/search")
     public List<UserEmailDto> findUsersByEmail(@RequestParam String email) {
-        return userService.findUsersByEmail(email);
+        return userService.findUsersByEmailAddress(email)
+                .stream()
+                .map(user -> new UserEmailDto(user.getId(), user.getEmail()))
+                .collect(Collectors.toList());
     }
 
-    // Find users older than
-    @GetMapping("/older-than/{age}")
-    public List<UserDto> findUsersOlderThan(@PathVariable int age) {
-        return userService.findUsersOlderThan(age)
+    // Find users older than a given date
+    @GetMapping("/older/{date}")
+    public List<UserDto> findUsersOlderThan(@PathVariable String date) {
+        return userService.findUsersOlderThan(date)
                 .stream()
                 .map(userMapper::toDto)
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     // CRUD operations
+
     // Create a new user
-    @PostMapping("/{firstName}/{lastName}/{birthdate}/{email}")
-    public void createUserInDatabase(@PathVariable String firstName,
-                                     @PathVariable String lastName,
-                                     @PathVariable LocalDate birthdate,
-                                     @PathVariable String email) {
-        userService.createUser(new User(firstName, lastName, birthdate, email));
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@RequestBody User user) {
+        if (user.getFirstName() == null || user.getLastName() == null || user.getBirthdate() == null || user.getEmail() == null) {
+            throw new IllegalArgumentException("All fields are required");
+        }
+        return userService.createUser(user);
     }
 
-    // Get user by id
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
-        return userMapper.toDto(userService.getUserById(id));
+    // Update an existing user by ID
+    @PutMapping("/{userId}")
+    public User updateUserById(@PathVariable Long userId, @RequestBody UserUpdateDto userUpdateDto) {
+        return userService.updateUser(userId, userUpdateDto);
     }
 
-    // Update user by id
-    @PutMapping("/{id}")
-    public UserDto updateUserById(@PathVariable Long id, @RequestBody UserUpdateDto userUpdateDto) {
-        User updatedUser = userService.updateUser(id, userUpdateDto);
-        return userMapper.toDto(updatedUser);
+    // Delete a user by ID
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserById(@PathVariable Long userId) {
+        userService.deleteUserById(userId);
     }
 
-    // Delete user by id
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id) {
-        userService.deleteUserById(id);
+    // Get user details by ID
+    @GetMapping("/{userId}")
+    public UserDto getUserById(@PathVariable Long userId) {
+        return userMapper.toDto(userService.getUserById(userId));
+    }
+
+    // Get all users
+    @GetMapping
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers()
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    // Get all simple users
+    @GetMapping("/simple")
+    public List<UserBasicInfoDto> getAllSimpleUsers() {
+        return userService.getAllUsers()
+                .stream()
+                .map(user -> new UserBasicInfoDto(user.getId(), user.getFirstName(), user.getLastName()))
+                .collect(Collectors.toList());
+    }
+
+    // Get user by email
+    @GetMapping("/email")
+    public List<UserDto> getUserByEmail(@RequestParam String email) {
+        return userService.findUsersByEmailAddress(email)
+                .stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

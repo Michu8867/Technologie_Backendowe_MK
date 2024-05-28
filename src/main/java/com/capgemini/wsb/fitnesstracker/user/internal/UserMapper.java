@@ -1,24 +1,20 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
-import org.springframework.stereotype.Component;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserDto;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserUpdateDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    UserDto toDto(User user) {
-        return new UserDto(user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getBirthdate(),
-                user.getEmail());
-    }
+    UserDto toDto(User user);
 
-    User toEntity(UserDto userDto) {
-        return new User(
-                userDto.getFirstName(),
-                userDto.getLastName(),
-                userDto.getBirthdate(),
-                userDto.getEmail());
-    }
+    @Mapping(target = "id", ignore = true)
+    User toEntity(UserUpdateDto userUpdateDto);
 }
+
+
+
+

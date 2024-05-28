@@ -1,39 +1,21 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
-import com.capgemini.wsb.fitnesstracker.user.api.UserProvider;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
-import com.capgemini.wsb.fitnesstracker.user.api.UserUpdateDto;
+import com.capgemini.wsb.fitnesstracker.user.api.UserNotFoundException;
+import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class UserServiceImpl implements UserService, UserProvider {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    @Override
-    public User createUser(final User user) {
-        log.info("Creating User {}", user);
-        if (user.getId() != null) {
-            throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
-        }
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-    }
+    private final UserMapper userMapper;
 
     @Override
     public List<User> getAllUsers() {
@@ -41,54 +23,58 @@ public class UserServiceImpl implements UserService, UserProvider {
     }
 
     @Override
-    public User updateUser(Long id, UserUpdateDto userUpdateDto) {
-        User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        userToUpdate.setFirstName(userUpdateDto.getFirstName());
-        userToUpdate.setLastName(userUpdateDto.getLastName());
-        return userRepository.save(userToUpdate);
+    public List<User> findUsersByEmailAddress(String email) {
+        return userRepository.findByEmailContainingIgnoreCase(email);
     }
 
     @Override
-    public void deleteUserById(Long id) {
-        if (!userRepository.existsById(id)) {
-            log.error("Attempt to delete non-existing user with id: " + id);
-            throw new RuntimeException("User not found with id: " + id);
-        }
-        userRepository.deleteById(id);
-        log.info("Deleted user with id: " + id);
+    public List<User> findUsersOlderThan(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        return userRepository.findByBirthdateBefore(localDate);
     }
 
     @Override
-    public List<User> findUsersByEmailAddress(String emailAddresses) {
-        return userRepository.findUsersByEmailContaining(emailAddresses);
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public List<UserEmailDto> findUsersByEmail(String email) {
-        return userRepository.findUsersByEmailContaining(email).stream()
-                .map(user -> new UserEmailDto(user.getId(), user.getEmail()))
-                .collect(Collectors.toList());
+    public User updateUser(Long userId, UserUpdateDto userUpdateDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.setFirstName(userUpdateDto.getFirstName());
+        user.setLastName(userUpdateDto.getLastName());
+        user.setEmail(userUpdateDto.getEmail());
+        user.setBirthdate(userUpdateDto.getBirthdate());
+        return userRepository.save(user);
     }
 
     @Override
-    public List<User> findUsersOlderThan(int age) {
-        LocalDate cutoffDate = LocalDate.now().minusYears(age);
-        return userRepository.findUsersOlderThan(cutoffDate);
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
     }
 
     @Override
-    public Optional<User> getUser(final Long userId) {
-        return userRepository.findById(userId);
-    }
-
-    @Override
-    public Optional<User> getUserByEmail(final String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
