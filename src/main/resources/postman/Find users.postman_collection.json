@@ -1,0 +1,31 @@
+{
+  "info": {
+    "name": "Find users",
+    "description": "Collection for finding users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Older than",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8091/v1/users/older-than/{age}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8091",
+          "path": [
+            "v1",
+            "users",
+            "older-than",
+            "{age}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
