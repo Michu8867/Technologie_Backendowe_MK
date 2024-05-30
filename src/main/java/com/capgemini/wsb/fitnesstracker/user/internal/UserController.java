@@ -1,6 +1,7 @@
 package com.capgemini.wsb.fitnesstracker.user.internal;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
+import com.capgemini.wsb.fitnesstracker.user.api.UserNotFoundException;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
 import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserBasicInfoDto;
 import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserDto;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for managing users in the Fitness Tracker system.
+ */
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
@@ -21,7 +25,11 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    // List all users with basic info
+    /**
+     * Retrieves basic information (ID, first name, last name) for all users.
+     *
+     * @return a list of {@link UserBasicInfoDto} containing basic user information
+     */
     @GetMapping("/basic-info")
     public List<UserBasicInfoDto> getAllUsersBasicInfo() {
         return userService.getAllUsers()
@@ -30,7 +38,12 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    // Find users by email
+    /**
+     * Finds users by email address.
+     *
+     * @param email the email to search for
+     * @return a list of {@link UserEmailDto} containing users' ID and email
+     */
     @GetMapping("/search")
     public List<UserEmailDto> findUsersByEmail(@RequestParam String email) {
         return userService.findUsersByEmailAddress(email)
@@ -39,7 +52,12 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    // Find users older than a given date
+    /**
+     * Finds users older than a given date.
+     *
+     * @param date the date to compare
+     * @return a list of {@link UserDto} containing users' details
+     */
     @GetMapping("/older/{date}")
     public List<UserDto> findUsersOlderThan(@PathVariable String date) {
         return userService.findUsersOlderThan(date)
@@ -48,9 +66,13 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    // CRUD operations
-
-    // Create a new user
+    /**
+     * Creates a new user.
+     *
+     * @param user the user to create
+     * @return the created {@link User}
+     * @throws IllegalArgumentException if any required fields are null
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
@@ -60,26 +82,45 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    // Update an existing user by ID
+    /**
+     * Updates an existing user by ID.
+     *
+     * @param userId the ID of the user to update
+     * @param userUpdateDto the user data to update
+     * @return the updated {@link User}
+     */
     @PutMapping("/{userId}")
     public User updateUserById(@PathVariable Long userId, @RequestBody UserUpdateDto userUpdateDto) {
         return userService.updateUser(userId, userUpdateDto);
     }
 
-    // Delete a user by ID
+    /**
+     * Deletes a user by ID.
+     *
+     * @param userId the ID of the user to delete
+     */
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUserById(@PathVariable Long userId) {
         userService.deleteUserById(userId);
     }
 
-    // Get user details by ID
+    /**
+     * Retrieves detailed information about a user by ID.
+     *
+     * @param userId the ID of the user to retrieve
+     * @return the {@link UserDto} containing the user's details
+     */
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable Long userId) {
         return userMapper.toDto(userService.getUserById(userId));
     }
 
-    // Get all users
+    /**
+     * Retrieves all users with detailed information.
+     *
+     * @return a list of {@link UserDto} containing users' details
+     */
     @GetMapping
     public List<UserDto> getAllUsers() {
         return userService.getAllUsers()
@@ -88,7 +129,11 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    // Get all simple users
+    /**
+     * Retrieves all users with basic information.
+     *
+     * @return a list of {@link UserBasicInfoDto} containing basic user information
+     */
     @GetMapping("/simple")
     public List<UserBasicInfoDto> getAllSimpleUsers() {
         return userService.getAllUsers()
@@ -97,31 +142,19 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    // Get user by email
+    /**
+     * Retrieves users by email.
+     *
+     * @param email the email to search for
+     * @return a list of {@link UserDto} containing users' details
+     * @throws UserNotFoundException if no user with the given email is found
+     */
     @GetMapping("/email")
     public List<UserDto> getUserByEmail(@RequestParam String email) {
-        return userService.findUsersByEmailAddress(email)
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+        List<User> users = userService.findUsersByEmailAddress(email);
+        if (users.isEmpty()) {
+            throw new UserNotFoundException(email);
+        }
+        return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
