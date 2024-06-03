@@ -1,0 +1,59 @@
+{
+    "info": {
+        "_postman_id": "8a0dfd1e-255b-4f91-9f72-2fddb2a0d89b",
+        "name": "Find Trainings",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "35093040"
+    },
+    "item": [
+        {
+            "name": "Trainings by Date",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/finished/{afterTime}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "finished",
+                        "{afterTime}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Trainings by Activity Type",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/activityType?activityType={activityType}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "activityType"
+                    ],
+                    "query": [
+                        {
+                            "key": "activityType",
+                            "value": "{activityType}"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}

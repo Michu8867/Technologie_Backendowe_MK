@@ -1,0 +1,111 @@
+{
+    "info": {
+        "_postman_id": "9a5899a0-d30b-48f6-9b0c-97166c648cae",
+        "name": "CRUD Training Operations",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "35093040"
+    },
+    "item": [
+        {
+            "name": "Create Training",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": 1,\n  \"startTime\": \"2024-05-31T12:00:00\",\n  \"endTime\": \"2024-05-31T13:00:00\",\n  \"activityType\": \"RUNNING\",\n  \"distance\": 5.0,\n  \"averageSpeed\": 10.0\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Read Training",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/{trainingId}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "{trainingId}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Training",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"userId\": 1,\n  \"startTime\": \"2024-05-31T12:00:00\",\n  \"endTime\": \"2024-05-31T13:00:00\",\n  \"activityType\": \"RUNNING\",\n  \"distance\": 5.0,\n  \"averageSpeed\": 10.0\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/{trainingId}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "{trainingId}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Training",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/{trainingId}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "{trainingId}"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}

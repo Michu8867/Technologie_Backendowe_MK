@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Implementation of {@link TrainingProvider} interface for managing training sessions.
+ */
 @Service
 @RequiredArgsConstructor
 public class TrainingServiceImpl implements TrainingProvider {
@@ -68,9 +71,15 @@ public class TrainingServiceImpl implements TrainingProvider {
                 .orElseThrow(() -> new IllegalArgumentException("Training not found with ID: " + trainingId));
     }
 
+    /**
+     * Validates if the user with the specified ID exists.
+     *
+     * @param userId the ID of the user
+     */
     private void validateUser(Long userId) {
         if (userId == null || userService.getUserById(userId) == null) {
             throw new IllegalArgumentException("User must be provided with a valid ID");
         }
     }
 }
+

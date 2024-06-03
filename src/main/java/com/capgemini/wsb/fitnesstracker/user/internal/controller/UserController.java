@@ -1,8 +1,9 @@
-package com.capgemini.wsb.fitnesstracker.user.internal;
+package com.capgemini.wsb.fitnesstracker.user.internal.controller;
 
 import com.capgemini.wsb.fitnesstracker.user.api.User;
 import com.capgemini.wsb.fitnesstracker.user.api.UserNotFoundException;
 import com.capgemini.wsb.fitnesstracker.user.api.UserService;
+import com.capgemini.wsb.fitnesstracker.user.internal.UserMapper;
 import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserBasicInfoDto;
 import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserDto;
 import com.capgemini.wsb.fitnesstracker.user.internal.dto.UserEmailDto;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +82,17 @@ public class UserController {
             throw new IllegalArgumentException("All fields are required");
         }
         return userService.createUser(user);
+    }
+
+    @PostMapping("/{firstname}/{lastname}/{birthdate}/{email}")
+    public void addUserToDatabase(@PathVariable("firstname") String firstname,
+                                  @PathVariable("lastname") String lastname,
+                                  @PathVariable("birthdate") LocalDate birthdate,
+                                  @PathVariable("email") String email) {
+
+        User user = new User(firstname, lastname, birthdate, email);
+        userService.createUser(user);
+
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.capgemini.wsb.fitnesstracker.training.internal;
 
-import com.capgemini.wsb.fitnesstracker.training.internal.ActivityType;
 import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * Data transfer object for training requests.
+ */
 @Data
 public class TrainingRequest {
     private Long userId;

@@ -1,0 +1,51 @@
+{
+    "info": {
+        "_postman_id": "ec5e515d-4fc3-4a2e-b7cb-7e7f27b982ed",
+        "name": "Get Trainings",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "35093040"
+    },
+    "item": [
+        {
+            "name": "All Trainings",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Trainings for User",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8091/v1/trainings/{userId}",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8091",
+                    "path": [
+                        "v1",
+                        "trainings",
+                        "{userId}"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}

@@ -6,6 +6,9 @@ import com.capgemini.wsb.fitnesstracker.user.api.User;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Interface for training services.
+ */
 public interface TrainingService {
     Training createTraining(Training training);
     List<Training> getAllTrainings();
